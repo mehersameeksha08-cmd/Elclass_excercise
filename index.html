@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastAPI Feedback Form</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#ffffff;
+}
+
+.container{
+    width:360px;
+    margin:70px auto;
+}
+
+h2{
+    color:#444;
+    margin-bottom:20px;
+    font-weight:600;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:12px;
+    border:1px solid #d8d8d8;
+    font-size:14px;
+}
+
+textarea{
+    resize:none;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#333;
+    color:white;
+    border:none;
+    font-size:15px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#222;
+}
+
+h3{
+    margin-top:18px;
+    margin-bottom:10px;
+    color:#444;
+}
+
+#response{
+    height:90px;
+    background:#fafafa;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h2>FastAPI Feedback Form</h2>
+
+<form id="feedbackForm">
+
+<input
+type="text"
+id="student_name"
+placeholder="Student Name"
+required>
+
+<input
+type="text"
+id="topic"
+placeholder="Topic"
+required>
+
+<input
+type="number"
+id="rating"
+placeholder="Rating 1 to 5"
+min="1"
+max="5"
+required>
+
+<textarea
+id="comment"
+rows="4"
+placeholder="Comment"
+required></textarea>
+
+<button type="submit">
+Submit Feedback
+</button>
+
+</form>
+
+<h3>Response</h3>
+
+<textarea
+id="response"
+rows="5"
+readonly></textarea>
+
+</div>
+
+<script>
+
+document.getElementById("feedbackForm").addEventListener("submit", async function(event){
+
+    event.preventDefault();
+
+    const data={
+        student_name:document.getElementById("student_name").value,
+        topic:document.getElementById("topic").value,
+        rating:parseInt(document.getElementById("rating").value),
+        comment:document.getElementById("comment").value
+    };
+
+    try{
+
+        const response=await fetch("http://127.0.0.1:8000/feedback",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify(data)
+
+        });
+
+        const result=await response.json();
+
+        document.getElementById("response").value=
+JSON.stringify(result,null,4);
+
+    }
+
+    catch(error){
+
+        document.getElementById("response").value=
+"Unable to connect to FastAPI server.";
+
+    }
+
+});
+</script>
+
+</body>
+</html>
